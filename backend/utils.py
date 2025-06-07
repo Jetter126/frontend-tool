@@ -2,18 +2,14 @@ import requests, os
 
 builtwith_api_key = os.environ["BUILTWITH_API_KEY"]
 
-def clean_url(url: str) -> str | int:
-    """Returns a clean version of the input URL (formatted as https://example.com/) or 
-    -1 if the input URL doesn't contain a protocol.
-    """
+def clean_url(url: str) -> str:
+    """Returns a clean version of the input URL (formatted as https://example.com/)"""
+    protocol = "https://"
     if url.startswith("http://"):
         protocol = "http://"
         url = url[len(protocol):]
     elif url.startswith("https://"):
-        protocol = "https://"
         url = url[len(protocol):]
-    else:
-        return -1
     
     # Remove anything after the domain and www.
     for sep in ["/", "?", "#"]:
