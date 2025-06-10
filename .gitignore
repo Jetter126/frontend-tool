@@ -1,2 +1,5 @@
-# for API keys
+# for API keys, general config, etc.
 .env
+
+# for sandboxing
+backend/sandbox.py
