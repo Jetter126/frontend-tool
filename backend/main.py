@@ -18,7 +18,7 @@ def error_function(state: State) -> State:
 
 def clean_sample_website(state: State) -> State:
     result = clean_url(state["sample_website"])
-    if validators.url(result) and int(requests.get(result).status_code) / 100 == 2:
+    if validators.url(result) and int(requests.get(result).status_code / 100) == 2:
         state["sample_website"] = result
     else:
         state["error_message"] = "The given URL is invalid."
