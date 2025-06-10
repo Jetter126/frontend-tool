@@ -1,9 +1,18 @@
 from langgraph.graph import StateGraph, START, END
+from langchain.chat_models import init_chat_model
 from typing import Optional, TypedDict, List
+from dotenv import load_dotenv
+import os
 import validators
 import requests
 
 from utils import clean_url
+
+
+# Initialise LLM
+load_dotenv()
+llm = init_chat_model(os.getenv("MODEL_NAME"))
+
 
 # State definition
 class State(TypedDict):
@@ -11,10 +20,12 @@ class State(TypedDict):
     tech_stack: List[str]
     error_message: str
 
+
 # Node functions
 def error_function(state: State) -> State:
     print(state["error_message"])
     return state
+
 
 def clean_sample_website(state: State) -> State:
     result = clean_url(state["sample_website"])
@@ -24,6 +35,7 @@ def clean_sample_website(state: State) -> State:
         state["error_message"] = "The given URL is invalid."
 
     return state
+
 
 # Building the graph
 graph_builder = StateGraph(State)
