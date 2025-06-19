@@ -3,3 +3,6 @@
 
 # for sandboxing
 backend/sandbox.py
+
+# Byte-compiled / optimized / DLL files
+backend/__pycache__/
