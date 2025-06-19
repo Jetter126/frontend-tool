@@ -16,16 +16,16 @@ llm = init_chat_model(os.getenv("MODEL_NAME"))
 
 # Node functions
 def error_function(state: State) -> State:
-    print(state["error_message"])
+    print(state.error_message)
     return state
 
 
 def clean_sample_website(state: State) -> State:
-    result = clean_url(state["sample_website"])
+    result = clean_url(state.sample_website)
     if validators.url(result) and int(requests.get(result).status_code / 100) == 2:
-        state["sample_website"] = result
+        state.sample_website = result
     else:
-        state["error_message"] = "The given URL is invalid."
+        state.error_message = "The given URL is invalid."
 
     return state
 
@@ -40,5 +40,6 @@ graph_builder.add_edge("clean_sample_website", END)
 
 graph = graph_builder.compile()
 
-result = graph.invoke({"sample_website": "https://www.github.com/homepage?view=123/123"})
+initial_state = State(sample_website="https://www.github.com/homepage?view=123/123")
+result = graph.invoke(initial_state)
 print(result["sample_website"])
