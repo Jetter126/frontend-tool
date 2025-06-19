@@ -1,24 +1,17 @@
 from langgraph.graph import StateGraph, START, END
 from langchain.chat_models import init_chat_model
-from typing import Optional, TypedDict, List
 from dotenv import load_dotenv
 import os
 import validators
 import requests
 
+from models import State
 from utils import clean_url
 
 
 # Initialise LLM
 load_dotenv()
 llm = init_chat_model(os.getenv("MODEL_NAME"))
-
-
-# State definition
-class State(TypedDict):
-    sample_website: str
-    tech_stack: List[str]
-    error_message: str
 
 
 # Node functions
