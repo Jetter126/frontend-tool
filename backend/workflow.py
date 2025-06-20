@@ -1,3 +1,4 @@
+import json
 import os
 import requests
 from typing import Any, Dict
@@ -38,7 +39,17 @@ class Workflow:
         
     def _extract_tech_stack(self, state: State) -> Dict[str, Any]:
         """Extracts the tech stack used to build the sample website."""
-        tech_stack = extract_tech_stack(state.sample_website)
+        with open("tech_stacks.json", "r") as file:
+            data = json.load(file)
+
+        try:
+            tech_stack = data[state.sample_website]
+        except:
+            tech_stack = extract_tech_stack(state.sample_website)
+            data[state.sample_website] = tech_stack
+            with open("tech_stacks.json", "w") as file:
+                json.dump(data, file)
+
         return {"tech_stack": tech_stack}
 
     def run(self, sample_website: str):
