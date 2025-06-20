@@ -30,11 +30,9 @@ class Workflow:
         """Cleans and validates the sample website submitted by the user"""
         result = clean_url(state.sample_website)
         if validators.url(result) and int(requests.get(result).status_code / 100) == 2:
-            state.sample_website = result
+            return {"sample_website": result}
         else:
-            state.error_message = "The given URL is invalid."
-
-        return state
+            return {"error_message": "The given URL is invalid."}
 
     def run(self, sample_website: str):
         """Takes in user input and runs the agent"""
