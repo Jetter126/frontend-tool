@@ -22,10 +22,12 @@ class Workflow:
 
         graph_builder.add_node("clean_sample_website", self._clean_sample_website)
         graph_builder.add_node("extract_tech_stack", self._extract_tech_stack)
+        graph_builder.add_node("generate_frontend", self._generate_frontend)
 
         graph_builder.add_edge(START, "clean_sample_website")
         graph_builder.add_edge("clean_sample_website", "extract_tech_stack")
-        graph_builder.add_edge("extract_tech_stack", END)
+        graph_builder.add_edge("extract_tech_stack", "generate_frontend")
+        graph_builder.add_edge("generate_frontend", END)
 
         return graph_builder.compile()
 
@@ -51,6 +53,10 @@ class Workflow:
                 json.dump(data, file)
 
         return {"tech_stack": tech_stack}
+
+    def _generate_frontend(self, state: State) -> Dict[str, Any]:
+        """Generates code to replicate the sample website using the extracted tech stack."""
+        return {"generated_frontend": {}}
 
     def run(self, sample_website: str):
         """Takes in user input and runs the agent."""

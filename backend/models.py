@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Dict, Optional, List
 
 from pydantic import BaseModel
 
@@ -8,3 +8,4 @@ class State(BaseModel):
     sample_website: str
     tech_stack: List[str] = []
     error_message: Optional[str] = None
+    generated_frontend: Dict[str, str] = {}
