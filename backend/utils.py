@@ -1,5 +1,9 @@
+import builtwith
+from typing import List
+
+
 def clean_url(url: str) -> str:
-    """Returns a clean version of the input URL (formatted as https://example.com/)"""
+    """Returns a clean version of the input URL (formatted as https://example.com/)."""
     # Remove and save protocol
     protocol = "https://"
     if url.startswith("http://"):
@@ -17,3 +21,15 @@ def clean_url(url: str) -> str:
 
     # Return the clean URL
     return f"{protocol}{url}/"
+
+
+def extract_tech_stack(url: str) -> List[str]:
+    """Extracts and return the tech stack of a website."""
+    results = builtwith.parse(url)
+    tech_stack = []
+
+    if results:
+        for tools in results.values():
+            tech_stack.extend(tools)
+
+    return list(set(tech_stack))
