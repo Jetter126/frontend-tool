@@ -1,5 +1,6 @@
-import builtwith
 from typing import List
+
+import builtwith
 
 
 def clean_url(url: str) -> str:
