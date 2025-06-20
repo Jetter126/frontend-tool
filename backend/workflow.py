@@ -16,6 +16,7 @@ class Workflow:
         self.workflow = self._build_workflow()
 
     def _build_workflow(self):
+        """Builds the workflow graph using nodes and edges"""
         graph_builder = StateGraph(State)
 
         graph_builder.add_node("clean_sample_website", self._clean_sample_website)
@@ -26,6 +27,7 @@ class Workflow:
         return graph_builder.compile()
 
     def _clean_sample_website(self, state: State) -> Dict[str, Any]:
+        """Cleans and validates the sample website submitted by the user"""
         result = clean_url(state.sample_website)
         if validators.url(result) and int(requests.get(result).status_code / 100) == 2:
             state.sample_website = result
@@ -34,8 +36,9 @@ class Workflow:
 
         return state
 
-    def run(self):
-        initial_state = State(sample_website="https://www.github.com/homepage?view=123/123")
+    def run(self, sample_website: str):
+        """Takes in user input and runs the agent"""
+        initial_state = State(sample_website=sample_website)
         final_state = self.workflow.invoke(initial_state)
         return State(**final_state)
     

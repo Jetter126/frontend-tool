@@ -1,7 +1,3 @@
-import requests, os
-
-builtwith_api_key = os.environ["BUILTWITH_API_KEY"]
-
 def clean_url(url: str) -> str:
     """Returns a clean version of the input URL (formatted as https://example.com/)"""
     # Remove and save protocol
