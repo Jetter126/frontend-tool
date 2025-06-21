@@ -66,7 +66,7 @@ class Workflow:
 
     def _generate_frontend(self, state: State) -> Dict[str, Any]:
         """Generates code to produce a frontend similar to the sample website using the extracted tech stack."""
-        print("Generating the frontend...\n")
+        print("Generating the frontend...")
 
         messages = [
             SystemMessage(content=self.prompts.CODE_GENERATION_SYSTEM),
@@ -76,6 +76,10 @@ class Workflow:
         try:
             response = self.llm.invoke(messages)
             generated_frontend = parse_generated_code(response.content)
+            for filename, content in generated_frontend.items():
+                with open(filename, "w") as file:
+                    file.write(content)
+            print(f"✅ Created the following files: {', '.join(generated_frontend.keys())}")
             return {"generated_frontend": generated_frontend}
         except Exception as e:
             print(e)
