@@ -44,6 +44,8 @@ class Workflow:
         
     def _extract_tech_stack(self, state: State) -> Dict[str, Any]:
         """Extracts the tech stack used to build the sample website."""
+        print(f"🔍 Examining {state.sample_website}")
+
         with open("tech_stacks.json", "r") as file:
             data = json.load(file)
 
@@ -55,10 +57,17 @@ class Workflow:
             with open("tech_stacks.json", "w") as file:
                 json.dump(data, file)
 
+        if (len(tech_stack) > 0):
+            print(f"✅ Done! Here's the tech stack: {', '.join(tech_stack)}")
+        else:
+            print(f"❌ Couldn't find the tech stack :/")
+
         return {"tech_stack": tech_stack}
 
     def _generate_frontend(self, state: State) -> Dict[str, Any]:
         """Generates code to produce a frontend similar to the sample website using the extracted tech stack."""
+        print("Generating the frontend...\n")
+
         messages = [
             SystemMessage(content=self.prompts.CODE_GENERATION_SYSTEM),
             HumanMessage(content=self.prompts.code_generation_user(state.sample_website, state.tech_stack))
