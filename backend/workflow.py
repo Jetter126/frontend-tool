@@ -4,16 +4,19 @@ import requests
 from typing import Any, Dict
 
 from langchain.chat_models import init_chat_model
+from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.graph import StateGraph, START, END
 import validators
 
 from models import State
-from utils import clean_url, extract_tech_stack
+from prompts import FrontendDevelopmentPrompts
+from utils import clean_url, extract_tech_stack, parse_generated_code
 
 
 class Workflow:
     def __init__(self):
         self.llm = init_chat_model(os.getenv("MODEL_NAME"))
+        self.prompts = FrontendDevelopmentPrompts()
         self.workflow = self._build_workflow()
 
     def _build_workflow(self):
@@ -55,8 +58,19 @@ class Workflow:
         return {"tech_stack": tech_stack}
 
     def _generate_frontend(self, state: State) -> Dict[str, Any]:
-        """Generates code to replicate the sample website using the extracted tech stack."""
-        return {"generated_frontend": {}}
+        """Generates code to produce a frontend similar to the sample website using the extracted tech stack."""
+        messages = [
+            SystemMessage(content=self.prompts.CODE_GENERATION_SYSTEM),
+            HumanMessage(content=self.prompts.code_generation_user(state.sample_website, state.tech_stack))
+        ]
+
+        try:
+            response = self.llm.invoke(messages)
+            generated_frontend = parse_generated_code(response.content)
+            return {"generated_frontend": generated_frontend}
+        except Exception as e:
+            print(e)
+            return {"generated_frontend": {}}
 
     def run(self, sample_website: str):
         """Takes in user input and runs the agent."""
