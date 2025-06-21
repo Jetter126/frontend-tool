@@ -1,4 +1,4 @@
-from typing import List
+from typing import Dict, List
 
 import builtwith
 
@@ -34,3 +34,25 @@ def extract_tech_stack(url: str) -> List[str]:
             tech_stack.extend(tools)
 
     return list(set(tech_stack))
+
+
+def parse_generated_code(code: str) -> Dict[str, str]:
+    """Parses LLM-generated frontend code into a dictionary with a key for each code file."""
+    lines = code.strip().splitlines()
+    result = {}
+    current_file = None
+    current_lines = []
+
+    for line in lines:
+        if line.strip().startswith("FILE "):
+            if current_file is not None:
+                result[current_file] = '\n'.join(current_lines).strip()
+            current_file = line.strip()[5:]
+            current_lines = []
+        else:
+            current_lines.append(line)
+
+    if current_file is not None:
+        result[current_file] = '\n'.join(current_lines).strip()
+
+    return result
