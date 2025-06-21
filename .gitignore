@@ -1,12 +1,13 @@
 # For API keys, general config, etc.
 .env
+.venv
 
 # For sandboxing
 backend/sandbox.py
 
 # Byte-compiled / optimized / DLL files
-backend/__pycache__/
-backend/.pytest_cache/
+**/__pycache__/
+**/.pytest_cache/
 
 # Persistence
 backend/tech_stacks.json
