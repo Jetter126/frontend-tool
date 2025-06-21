@@ -22,6 +22,7 @@ class FrontendDevelopmentPrompts:
                 - For each file, display the file name (in one line only) and then start writing the code on the next line
                 - Write 'FILE ' before each file name
                 - Leave a blank line between each file
+                - Indent the code correctly, in accordance with each language or framework's convention.
 
                 Example format:
                 FILE index.html
