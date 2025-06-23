@@ -11,3 +11,6 @@ backend/sandbox.py
 
 # Persistence
 backend/tech_stacks.json
+
+# Generated output
+**/output/
