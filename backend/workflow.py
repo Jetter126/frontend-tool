@@ -10,13 +10,14 @@ import validators
 
 from models import State
 from prompts import FrontendDevelopmentPrompts
-from utils import clean_url, extract_tech_stack, parse_generated_code, write_generated_code
+from utils import UtilityFunctions
 
 
 class Workflow:
     def __init__(self):
         self.llm = init_chat_model(os.getenv("MODEL_NAME"))
         self.prompts = FrontendDevelopmentPrompts()
+        self.utility = UtilityFunctions()
         self.workflow = self._build_workflow()
 
     def _build_workflow(self):
@@ -36,7 +37,7 @@ class Workflow:
 
     def _clean_sample_website(self, state: State) -> Dict[str, Any]:
         """Cleans and validates the sample website submitted by the user."""
-        result = clean_url(state.sample_website)
+        result = self.utility.clean_url(state.sample_website)
         if validators.url(result) and int(requests.get(result).status_code / 100) == 2:
             return {"sample_website": result}
         else:
@@ -52,7 +53,7 @@ class Workflow:
         try:
             tech_stack = data[state.sample_website]
         except:
-            tech_stack = extract_tech_stack(state.sample_website)
+            tech_stack = self.utility.extract_tech_stack(state.sample_website)
             data[state.sample_website] = tech_stack
             with open("tech_stacks.json", "w") as file:
                 json.dump(data, file)
@@ -75,14 +76,14 @@ class Workflow:
 
         try:
             response = self.llm.invoke(messages)
-            generated_frontend = parse_generated_code(response.content)
+            generated_frontend = self.utility.parse_generated_code(response.content)
 
             current_dir = os.path.dirname(__file__)
             base_output_dir = os.path.join(current_dir, "..", "output")
             base_output_dir = os.path.abspath(base_output_dir)
 
             for filename, content in generated_frontend.items():
-                write_generated_code(current_dir, base_output_dir, filename, content)
+                self.utility.write_generated_code(current_dir, base_output_dir, filename, content)
 
             print(f"✅ Created the following files: {', '.join(generated_frontend.keys())}")
             return {"generated_frontend": generated_frontend}
