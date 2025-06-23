@@ -2,6 +2,7 @@ import json
 import os
 import requests
 from typing import Any, Dict
+from zipfile import ZipFile
 
 from langchain.chat_models import init_chat_model
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -84,6 +85,10 @@ class Workflow:
 
             for filename, content in generated_frontend.items():
                 self.utility.write_generated_code(current_dir, base_output_dir, filename, content)
+            
+            with ZipFile(os.path.join("..", "generated-frontend.zip"), "w") as zip:
+                for filename in generated_frontend.keys():
+                    zip.write(os.path.join("..", "output", filename))
 
             print(f"✅ Created the following files: {', '.join(generated_frontend.keys())}")
             return {"generated_frontend": generated_frontend}
