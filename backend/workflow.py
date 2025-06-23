@@ -89,6 +89,7 @@ class Workflow:
             with ZipFile(os.path.join("..", "generated-frontend.zip"), "w") as zip:
                 for filename in generated_frontend.keys():
                     zip.write(os.path.join("..", "output", filename))
+                    os.remove(os.path.join("..", "output", filename))
 
             print(f"✅ Created the following files: {', '.join(generated_frontend.keys())}")
             return {"generated_frontend": generated_frontend}
