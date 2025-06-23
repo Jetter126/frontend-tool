@@ -82,8 +82,17 @@ class Workflow:
             base_output_dir = os.path.abspath(base_output_dir)
 
             for filename, content in generated_frontend.items():
+                os.chdir(current_dir)
                 if "/" in filename:
-                    pass # Add folder handling
+                    split_path = filename.split("/")
+                    output_dir = base_output_dir
+                    for dir in split_path[:-1]:
+                        if dir not in os.listdir(output_dir):
+                            os.chdir(output_dir)
+                            os.mkdir(dir)
+                        output_dir = os.path.join(output_dir, dir)
+                    with open(os.path.join(output_dir, split_path[-1]), "w") as file:
+                        file.write(content)
                 else:
                     with open(os.path.join(base_output_dir, filename), "w") as file:
                         file.write(content)
