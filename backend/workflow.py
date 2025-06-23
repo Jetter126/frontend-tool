@@ -76,9 +76,17 @@ class Workflow:
         try:
             response = self.llm.invoke(messages)
             generated_frontend = parse_generated_code(response.content)
+
+            current_dir = os.path.dirname(__file__)
+            base_output_dir = os.path.join(current_dir, "..", "output")
+            base_output_dir = os.path.abspath(base_output_dir)
+
             for filename, content in generated_frontend.items():
-                with open(filename, "w") as file:
-                    file.write(content)
+                if "/" in filename:
+                    pass # Add folder handling
+                else:
+                    with open(os.path.join(base_output_dir, filename), "w") as file:
+                        file.write(content)
             print(f"✅ Created the following files: {', '.join(generated_frontend.keys())}")
             return {"generated_frontend": generated_frontend}
         except Exception as e:
@@ -90,9 +98,3 @@ class Workflow:
         initial_state = State(sample_website=sample_website)
         final_state = self.workflow.invoke(initial_state)
         return State(**final_state)
-    
-"""
-def error_function(state: State) -> State:
-    print(state.error_message)
-    return state
-"""
